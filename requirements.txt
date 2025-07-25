@@ -1,1 +1,4 @@
 selenium 
+huggingface_hub 
+langchain
+python-dotenv

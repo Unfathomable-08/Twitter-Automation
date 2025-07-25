@@ -1,0 +1,3 @@
+.env
+venv/
+fb_cookies.pkl
