@@ -1,8 +1,5 @@
 from selenium import webdriver
-from selenium.webdriver.common.by import By
-import time
 import pickle
-import os
 
 def login_and_save_cookies():
     driver = webdriver.Chrome()
