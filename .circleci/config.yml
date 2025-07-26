@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   run-selenium:
     docker:
-      - image: cimg/python:3.10  # Python image
+      - image: cimg/python:3.10-browsers  # Python image
     steps:
       - checkout
 
