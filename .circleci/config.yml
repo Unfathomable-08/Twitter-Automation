@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   run-selenium:
     docker:
-      - image: cimg/python:3.10-browsers
+      - image: cimg/python:3.10  # Python image
     steps:
       - checkout
 
@@ -14,46 +14,22 @@ jobs:
             sudo apt install -y wget unzip curl
             wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
             sudo apt install -y ./google-chrome-stable_current_amd64.deb
-            google-chrome --version
 
       - run:
           name: Install ChromeDriver
           command: |
-            # Extract full Chrome version (e.g., 138.0.7204.XX)
-            CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+\.\d+' || echo "")
-            if [ -z "$CHROME_VERSION" ]; then
-              echo "Failed to get Chrome version, using latest ChromeDriver"
-              LATEST_RELEASE=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE)
-            else
-              # Use major.minor.build version for lookup (e.g., 138.0.7204)
-              CHROME_MAJOR_VERSION=${CHROME_VERSION%.*}
-              LATEST_RELEASE=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_MAJOR_VERSION})
-              if [ -z "$LATEST_RELEASE" ]; then
-                echo "No ChromeDriver for $CHROME_MAJOR_VERSION, falling back to latest"
-                LATEST_RELEASE=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE)
-              fi
-            fi
-            # Fallback to a known compatible version if all else fails
-            if [ -z "$LATEST_RELEASE" ]; then
-              echo "Using fallback ChromeDriver version"
-              LATEST_RELEASE="126.0.6478.126"
-            fi
-            echo "Downloading ChromeDriver version: $LATEST_RELEASE"
-            wget https://chromedriver.storage.googleapis.com/$LATEST_RELEASE/chromedriver_linux64.zip
+            wget https://storage.googleapis.com/chrome-for-testing-public/138.0.7204.168/linux64/chromedriver-linux64.zip
             unzip chromedriver_linux64.zip
             sudo mv chromedriver /usr/local/bin/
-            sudo chmod +x /usr/local/bin/chromedriver
-            chromedriver --version
+            chmod +x /usr/local/bin/chromedriver
 
       - run:
           name: Install Python dependencies
-          command: |
-            pip install -r requirements.txt
+          command: pip install -r requirements.txt
 
       - run:
           name: Run Python script
-          command: |
-            python app.py
+          command: python your_script.py
 
 workflows:
   version: 2
