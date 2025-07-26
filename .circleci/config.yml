@@ -1,4 +1,3 @@
-```yaml
 version: 2.1
 
 jobs:
@@ -61,4 +60,3 @@ workflows:
   run-on-push:
     jobs:
       - run-selenium
-```
