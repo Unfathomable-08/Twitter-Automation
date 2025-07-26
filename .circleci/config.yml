@@ -16,12 +16,15 @@ jobs:
             sudo apt install -y ./google-chrome-stable_current_amd64.deb
 
       - run:
-          name: Install ChromeDriver
-          command: |
-            wget https://storage.googleapis.com/chrome-for-testing-public/138.0.7204.168/linux64/chromedriver-linux64.zip
-            unzip chromedriver-linux64.zip
-            sudo mv chromedriver /usr/local/bin/
-            chmod +x /usr/local/bin/chromedriver
+        name: Install ChromeDriver
+        command: |
+          wget https://storage.googleapis.com/chrome-for-testing-public/138.0.7204.168/linux64/chromedriver-linux64.zip
+          unzip chromedriver-linux64.zip
+          ls -l  # Debug: Show extracted files
+          ls -l chromedriver-linux64/  # Debug: Show contents of the folder
+          sudo mv chromedriver-linux64/chromedriver /usr/local/bin/chromedriver
+          chmod +x /usr/local/bin/chromedriver
+          chromedriver --version  # Debug: Verify installation
 
       - run:
           name: Install Python dependencies
