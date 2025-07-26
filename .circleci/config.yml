@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   run-selenium:
     docker:
-      - image: cimg/python:3.10-browsers  # Python image
+      - image: cimg/python:3.10-browsers
     steps:
       - checkout
 
@@ -18,11 +18,12 @@ jobs:
       - run:
           name: Install ChromeDriver
           command: |
-            CHROME_VERSION=$(google-chrome --version | grep -oP '\d+' | head -1)
-            wget https://chromedriver.storage.googleapis.com/$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)/chromedriver_linux64.zip
+            CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
+            LATEST_RELEASE=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION})
+            wget https://chromedriver.storage.googleapis.com/${LATEST_RELEASE}/chromedriver_linux64.zip
             unzip chromedriver_linux64.zip
             sudo mv chromedriver /usr/local/bin/
-            chmod +x /usr/local/bin/chromedriver
+            sudo chmod +x /usr/local/bin/chromedriver
 
       - run:
           name: Install Python dependencies
