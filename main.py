@@ -66,7 +66,9 @@ def post_on_twitter(tweet):
         )
 
         # Tweet
+        tweet_box.click()
         tweet_box.send_keys(tweet)
+        print(f"Tweet to post:\n{tweet}")
 
         # Click Post btn
         post_button = WebDriverWait(driver, 15).until(
