@@ -18,12 +18,22 @@ jobs:
       - run:
           name: Install ChromeDriver
           command: |
-            CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
-            LATEST_RELEASE=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION})
+            CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+\.\d+' || echo "not found")
+            if [ "$CHROME_VERSION" = "not found" ]; then
+              echo "Failed to get Chrome version, falling back to latest ChromeDriver"
+              LATEST_RELEASE=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE)
+            else
+              LATEST_RELEASE=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION%.*})
+            fi
+            if [ -z "$LATEST_RELEASE" ]; then
+              echo "Failed to get ChromeDriver version, using fallback version"
+              LATEST_RELEASE="126.0.6478.126" # Fallback to a known compatible version
+            fi
             wget https://chromedriver.storage.googleapis.com/${LATEST_RELEASE}/chromedriver_linux64.zip
             unzip chromedriver_linux64.zip
             sudo mv chromedriver /usr/local/bin/
             sudo chmod +x /usr/local/bin/chromedriver
+            chromedriver --version
 
       - run:
           name: Install Python dependencies
