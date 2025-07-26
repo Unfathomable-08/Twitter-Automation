@@ -39,7 +39,7 @@ def post_on_twitter(tweet):
     options = Options()
     options = Options()
     options.add_argument("--disable-notifications")
-    options.add_argument("--headless=new")  # ✅ Good for CircleCI or CI/CD environments
+    # options.add_argument("--headless=new") 
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
 
