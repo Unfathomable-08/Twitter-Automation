@@ -8,7 +8,23 @@ import os
 import pickle
 import time
 
+import base64
+import os
+
+def restore_cookies_from_env(env_var="B64_COOKIES", target_path="fb_cookies.pkl"):
+    b64_data = os.environ.get(env_var)
+    if not b64_data:
+        raise Exception(f"❌ Environment variable {env_var} not set")
+    
+    # Remove any cert headers/footers if present (from certutil)
+    b64_cleaned = ''.join(line for line in b64_data.splitlines() if "CERTIFICATE" not in line)
+    
+    with open(target_path, "wb") as f:
+        f.write(base64.b64decode(b64_cleaned))
+    print("✅ fb_cookies.pkl restored from environment variable")
+
 def load_cookies(driver, cookies_file):
+    restore_cookies_from_env()
     if os.path.exists(cookies_file):
         with open(cookies_file, "rb") as f:
             cookies = pickle.load(f)
@@ -21,7 +37,16 @@ def load_cookies(driver, cookies_file):
 def post_on_twitter(tweet):
     # Init driver
     options = Options()
+    options = Options()
     options.add_argument("--disable-notifications")
+    options.add_argument("--headless=new")  # ✅ Good for CircleCI or CI/CD environments
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+
+    # ✅ Use a unique temp directory to avoid user-data-dir conflict
+    temp_user_data_dir = tempfile.mkdtemp()
+    options.add_argument(f"--user-data-dir={temp_user_data_dir}")
+
     driver = webdriver.Chrome(options=options)
 
     try:
