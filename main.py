@@ -2,9 +2,8 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.chrome.options import Options
+from login import login_and_save_cookies
 import os
 import pickle
 import time
@@ -51,10 +50,8 @@ def post_on_twitter(tweet):
             ))
         )
         post_button.click()
-        
+
     except Exception as e:
         print(f"Error posting tweet: {e}")
     finally:
         driver.quit()
-
-post_on_twitter("Hey, It is Fluentyx!")

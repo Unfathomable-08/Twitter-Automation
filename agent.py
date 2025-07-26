@@ -23,15 +23,13 @@ def generateTweet():
             [
             {{
                 "question": "What does the word \\"___\\" mean?",
-                "options": ["English Word", "English Word", "English Word", "English Word"],
-                "emojis": ["[emoji]", "[emoji]", "[emoji]", "[emoji]"]
+                "options": ["English Word", "English Word", "English Word", "English Word"]
             }}
             ]
 
             Rules:
             - The Arabic word must be a common noun (like an object, animal, or place).
             - All four options must be reasonable and distinct (not obvious).
-            - Each option must have a matching emoji in the same order.
             - Do NOT explain or translate anything.
             - DO NOT include any text outside the JSON array.
             """
@@ -48,6 +46,4 @@ def generateTweet():
 
     tweet = response.choices[0].message.content
     
-    print(tweet)
-
-generateTweet()
+    return tweet
