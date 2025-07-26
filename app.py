@@ -60,4 +60,6 @@ def run():
 #     schedule.run_pending()
 #     time.sleep(30)
 
-run()
+
+if __name__ == "__main__":
+    run()
