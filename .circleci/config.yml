@@ -1,3 +1,4 @@
+```yaml
 version: 2.1
 
 jobs:
@@ -14,22 +15,32 @@ jobs:
             sudo apt install -y wget unzip curl
             wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
             sudo apt install -y ./google-chrome-stable_current_amd64.deb
+            google-chrome --version
 
       - run:
           name: Install ChromeDriver
           command: |
-            CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+\.\d+' || echo "not found")
-            if [ "$CHROME_VERSION" = "not found" ]; then
-              echo "Failed to get Chrome version, falling back to latest ChromeDriver"
+            # Extract full Chrome version (e.g., 138.0.7204.XX)
+            CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+\.\d+' || echo "")
+            if [ -z "$CHROME_VERSION" ]; then
+              echo "Failed to get Chrome version, using latest ChromeDriver"
               LATEST_RELEASE=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE)
             else
-              LATEST_RELEASE=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION%.*})
+              # Use major.minor.build version for lookup (e.g., 138.0.7204)
+              CHROME_MAJOR_VERSION=${CHROME_VERSION%.*}
+              LATEST_RELEASE=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_MAJOR_VERSION})
+              if [ -z "$LATEST_RELEASE" ]; then
+                echo "No ChromeDriver for $CHROME_MAJOR_VERSION, falling back to latest"
+                LATEST_RELEASE=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE)
+              fi
             fi
+            # Fallback to a known compatible version if all else fails
             if [ -z "$LATEST_RELEASE" ]; then
-              echo "Failed to get ChromeDriver version, using fallback version"
-              LATEST_RELEASE="126.0.6478.126" # Fallback to a known compatible version
+              echo "Using fallback ChromeDriver version"
+              LATEST_RELEASE="126.0.6478.126"
             fi
-            wget https://chromedriver.storage.googleapis.com/${LATEST_RELEASE}/chromedriver_linux64.zip
+            echo "Downloading ChromeDriver version: $LATEST_RELEASE"
+            wget https://chromedriver.storage.googleapis.com/$LATEST_RELEASE/chromedriver_linux64.zip
             unzip chromedriver_linux64.zip
             sudo mv chromedriver /usr/local/bin/
             sudo chmod +x /usr/local/bin/chromedriver
@@ -37,14 +48,17 @@ jobs:
 
       - run:
           name: Install Python dependencies
-          command: pip install -r requirements.txt
+          command: |
+            pip install -r requirements.txt
 
       - run:
           name: Run Python script
-          command: python app.py
+          command: |
+            python app.py
 
 workflows:
   version: 2
   run-on-push:
     jobs:
       - run-selenium
+```
