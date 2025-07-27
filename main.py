@@ -11,17 +11,15 @@ import tempfile
 import base64
 import os
 
-def restore_cookies_from_env(env_var="B64_COOKIES", target_path="fb_cookies.pkl"):
+def restore_cookies_from_env(env_var="B64_COOKIES", target_path="x_cookies.pkl"):
     b64_data = os.environ.get(env_var)
     if not b64_data:
         raise Exception(f"❌ Environment variable {env_var} not set")
-    
-    # Remove any cert headers/footers if present (from certutil)
-    b64_cleaned = ''.join(line for line in b64_data.splitlines() if "CERTIFICATE" not in line)
-    
+
     with open(target_path, "wb") as f:
-        f.write(base64.b64decode(b64_cleaned))
-    print("✅ fb_cookies.pkl restored from environment variable")
+        f.write(base64.b64decode(b64_data))
+    print("✅ x_cookies.pkl restored from environment variable")
+
 
 def load_cookies(driver, cookies_file):
     restore_cookies_from_env()
@@ -53,7 +51,7 @@ def post_on_twitter(tweet):
         # Load Twitter and inject cookies
         driver.get("https://x.com/")
         driver.delete_all_cookies()
-        load_cookies(driver, "fb_cookies.pkl")
+        load_cookies(driver, "x_cookies.pkl")
 
         # Open post page
         driver.get("https://x.com/compose/post")

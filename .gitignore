@@ -1,4 +1,6 @@
 .env
 venv/
 fb_cookies.pkl
+x_cookies.pkl
 fb_cookies.b64
+fb_cookies_singleline.b64
