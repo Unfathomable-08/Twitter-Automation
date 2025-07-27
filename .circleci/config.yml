@@ -39,3 +39,31 @@ workflows:
   run-on-push:
     jobs:
       - run-selenium
+  nightly-selenium:
+    triggers:
+      - schedule:
+          cron: "21 8 * * *"  # 1:20 PM PKT (8:20 AM UTC)
+          filters:
+            branches:
+              only:
+                - main
+      - schedule:
+          cron: "35 12 * * *"  # 5:35 PM PKT (12:35 PM UTC)
+          filters:
+            branches:
+              only:
+                - main
+      - schedule:
+          cron: "45 16 * * *"  # 9:45 PM PKT (4:45 PM UTC)
+          filters:
+            branches:
+              only:
+                - main
+      - schedule:
+          cron: "15 22 * * *"  # 3:15 AM PKT (10:15 PM UTC)
+          filters:
+            branches:
+              only:
+                - main
+    jobs:
+      - run-selenium
